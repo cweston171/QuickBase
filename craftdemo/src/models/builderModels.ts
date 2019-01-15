@@ -40,7 +40,6 @@ export interface FieldSettings {
 export default class FormSettings {
     public static NewGenericInputSettings = (): IGenericInput => {
       return {
-        configId: null,
         label: '',
         required: false,
         type: InputTypes.text,
@@ -49,7 +48,6 @@ export default class FormSettings {
     }
     public static NewSelectInputSettings = (multi: boolean = false): ISelect => {
       return {
-        configId: null,
         label: '',
         multi,
         options: [],

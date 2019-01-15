@@ -9,6 +9,7 @@ export function* getFieldSettings(action: actions.getFieldSettings) {
   try {
     console.log('saga action.data:', action.payload)
     const resp = yield call(FieldService.getFieldSettings, action.payload)
+    console.log('resp', resp)
     yield put(actions.getFieldSettingsSuccess(resp))
   } catch (ex) {
     console.log(ex)

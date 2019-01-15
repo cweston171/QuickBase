@@ -15,6 +15,7 @@ import './index.scss'
 interface Props {
   settings: FieldSettings | undefined
   title: string
+  saving: boolean
 }
 
 interface State extends FieldSettings {
@@ -38,6 +39,15 @@ class FieldBuilderUI extends React.Component<Props, State> {
     this.state = this.initialState
   }
 
+  componentDidUpdate (prevProps: Props) {
+    if (prevProps.settings !== this.props.settings) {
+      this.setState(
+        (prevState) => Object.assign({}, prevState, this.props.settings),
+        () => { this.validateForm() }
+      )
+    }
+  }
+
   validateForm = () => {
     // validate builder form
     const { label } = this.state
@@ -52,6 +62,10 @@ class FieldBuilderUI extends React.Component<Props, State> {
 
   handleInputChange = (name: string, value: any) => {
     // handle input change
+    if (name === 'choices') {
+       const newVal = value.split('\n')
+       value = newVal
+    }
     this.setState(
       (prevState) => Object.assign({}, prevState, ({[name]: value})), 
       () => { this.validateForm() }
@@ -115,7 +129,7 @@ class FieldBuilderUI extends React.Component<Props, State> {
         <Input 
           type="textarea"
           name="choices"
-          value={this.state.choices}
+          value={this.state.choices.join('\n')}
           onChange={(e) => { this.handleInputChange('choices', e.target.value) }}
           style={{height: '150px'}}
         />

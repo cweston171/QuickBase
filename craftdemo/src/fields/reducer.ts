@@ -23,6 +23,7 @@ function fieldsReducer(state = initialState, action: any) {
       }
 
     case types.GET_FIELD_SETTINGS_SUCCESS:
+      console.log('reducer', action.payload)
       return {
        ...state,
        fieldSettings: action.payload,

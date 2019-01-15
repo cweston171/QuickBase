@@ -3,26 +3,27 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as fieldActionCreators from './fields/actions'
 import logo from './logo.svg'
+import { FieldSettings } from './models/builderModels'
 import FieldBuilderUI from './components/builder-form'
 import './App.css'
-import { FieldSettings } from './models/builderModels'
 
 interface Props {
   field: FieldSettings | undefined
   loadingField: boolean
-  actions: any
+  savingField: boolean
+  getField (id: string): any
 }
 
 class App extends Component<Props> {
   componentDidMount () {
-    this.props.actions.getField('x')
+    this.props.getField('x')
   }
 
   render() {
     const { field, loadingField } = this.props
 
     const fieldForm = !loadingField 
-      ? <FieldBuilderUI settings={undefined} title={'Field Builder'} />
+      ? <FieldBuilderUI settings={this.props.field} title={'Field Builder'} saving={this.props.savingField} />
       : <div>Loading...</div>
 
     return (
@@ -38,17 +39,18 @@ class App extends Component<Props> {
   }
 }
 
-const mstp = state => {
+const mstp = (state: any) => {
   const { fieldsReducer } = state
   return {
     field: fieldsReducer.fieldSettings,
     loadingField: fieldsReducer.loadingField,
+    savingField: fieldsReducer.savingField
   }
 }
 
-const mdtp = dispatch => {
+const mdtp = (dispatch: any) => {
   return {
-    actions: bindActionCreators(fieldActionCreators, dispatch)
+    getField: bindActionCreators(fieldActionCreators.getFieldSettings, dispatch)
   }
 }
 

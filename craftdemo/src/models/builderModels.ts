@@ -33,8 +33,8 @@ export interface FieldSettings {
   type: string
   required: boolean
   choices: string[]
+  default: string
   displayAlpha: boolean
-  value: string
 }
 
 export default class FormSettings {

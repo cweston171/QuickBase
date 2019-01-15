@@ -46,6 +46,10 @@ export type saveFieldSettings = {
   type: SAVE_FIELD_SETTINGS,
   payload: FieldSettings
 }
+export const saveFieldSettings = (req: FieldSettings): saveFieldSettings => ({
+  type: SAVE_FIELD_SETTINGS,
+  payload: req
+})
 
 export const SAVE_FIELD_SETTINGS_SUCCESS = '[Field] Save Settings -- Success'
 export type SAVE_FIELD_SETTINGS_SUCCESS = typeof SAVE_FIELD_SETTINGS_SUCCESS

@@ -10,27 +10,43 @@ import {
   FieldSettings
 } from '../../models/builderModels'
 import FormGroupHoc from '../../helpers/form-group-hoc'
+import StandardSubmitButton from '../submit-button'
 import './index.scss'
 
 interface Props {
   settings: FieldSettings | undefined
   title: string
   saving: boolean
+  updateField (req: FieldSettings): any
 }
 
 interface State extends FieldSettings {
   labelValid: boolean
+  choicesError: string | undefined
   formValid: boolean
 }
 
+const hasDupes = (a: any) => {
+  let counts = [];
+  for(let i = 0; i <= a.length; i++) {
+    if(counts[a[i]] === undefined) {
+      counts[a[i]] = 1;
+    } else {
+      return true;
+    }
+  }
+  return false;
+}
+
 class FieldBuilderUI extends React.Component<Props, State> {
-  readonly initialState: State = {
-    choices: [],
-    displayAlpha: true,
-    label: '',
-    required: true,
+  private initialState: State = {
+    choices: this.props.settings && this.props.settings.choices || [],
+    choicesError: undefined,
+    displayAlpha: this.props.settings && this.props.settings.displayAlpha || false,
+    default: this.props.settings && this.props.settings.default || '',
+    label: this.props.settings && this.props.settings.label || '',
+    required: this.props.settings && this.props.settings.required || false,
     type: 'multi-select',
-    value: '',
     labelValid: false,
     formValid: false
   }
@@ -41,6 +57,8 @@ class FieldBuilderUI extends React.Component<Props, State> {
 
   componentDidUpdate (prevProps: Props) {
     if (prevProps.settings !== this.props.settings) {
+      this.initialState = Object.assign({}, this.initialState, this.props.settings)
+      console.log('didupdate initialstate:', this.initialState)
       this.setState(
         (prevState) => Object.assign({}, prevState, this.props.settings),
         () => { this.validateForm() }
@@ -50,12 +68,23 @@ class FieldBuilderUI extends React.Component<Props, State> {
 
   validateForm = () => {
     // validate builder form
-    const { label } = this.state
-    const labelValid = label.length > 0
+    const { label, choices } = this.state
+    const labelValid = label.trim().length > 0
+    const choicesLengthValid = choices.length <= 50
+    const noChoiceDupes = !hasDupes(choices)
+    const choicesError = !choicesLengthValid && !noChoiceDupes
+        ? 'Number of choices must be less than or equal to 50 and include no duplicate values.'
+        : !choicesLengthValid && noChoiceDupes
+            ? 'Number or choices must be less than or equal to 50'
+            : choicesLengthValid && !noChoiceDupes
+                ? 'Choices must not include duplicated values'
+                : undefined
+    
     this.setState(
-      (prevState) => Object.assign({}, prevState, {
+      (prevState) => ({
         labelValid,
-        formValid: labelValid
+        formValid: labelValid && choicesLengthValid && noChoiceDupes,
+        choicesError
       })
     )
   }
@@ -79,13 +108,25 @@ class FieldBuilderUI extends React.Component<Props, State> {
     )
   }
 
-  handleSubmit = () => {}
+  handleSubmit = () => {
+    const req = this.state
+    
+    if (req.choices.indexOf(req.default) <= -1) {
+      req.choices.push(req.default)
+    }
+
+    this.props.updateField(this.state)
+  }
 
   render () {
     const { title } = this.props
 
     const labelError = !this.state.labelValid ? (
       <div className={'text-danger'}>A label is required</div>
+    ) : null
+
+    const choicesError = (this.state.choicesError) ? (
+      <div className={'text-danger'}>{this.state.choicesError}</div>  
     ) : null
     
     const form = (
@@ -117,12 +158,12 @@ class FieldBuilderUI extends React.Component<Props, State> {
           onChange={(e) => { this.handleInputChange('required', e.target.checked) }}
         />
       </FormGroupHoc>
-      <FormGroupHoc label="Default Value" name="value">
+      <FormGroupHoc label="Default Value" name="default">
         <Input 
           type="text"
-          name="value"
-          value={this.state.value}
-          onChange={(e) => { this.handleInputChange('value', e.target.value) }}
+          name="default"
+          value={this.state.default}
+          onChange={(e) => { this.handleInputChange('default', e.target.value) }}
         />
       </FormGroupHoc>
       <FormGroupHoc label="Choices" name="choices">
@@ -133,6 +174,7 @@ class FieldBuilderUI extends React.Component<Props, State> {
           onChange={(e) => { this.handleInputChange('choices', e.target.value) }}
           style={{height: '150px'}}
         />
+        {choicesError}
       </FormGroupHoc>
       <FormGroupHoc label="Order" name="order">
       <Input 
@@ -149,14 +191,12 @@ class FieldBuilderUI extends React.Component<Props, State> {
 
     const buttons = (
       <>
-      <Button
-        color={'primary'}
-        className={'mr-2'}
+      <StandardSubmitButton 
+        working={this.props.saving}
+        text="Submit"
+        classes={'mr-2'}
         onClick={this.handleSubmit}
-        disabled={!this.state.formValid}
-      >
-        Submit
-      </Button>
+      />
       Or
       <Button
         color={'link'}

@@ -7,9 +7,7 @@ import * as actions from './actions'
  */
 export function* getFieldSettings(action: actions.getFieldSettings) {
   try {
-    console.log('saga action.data:', action.payload)
     const resp = yield call(FieldService.getFieldSettings, action.payload)
-    console.log('resp', resp)
     yield put(actions.getFieldSettingsSuccess(resp))
   } catch (ex) {
     console.log(ex)
@@ -23,6 +21,8 @@ export function* getFieldSettings(action: actions.getFieldSettings) {
 export function* saveFieldSettings(action: actions.saveFieldSettings) {
   try {
     const resp = yield call(FieldService.saveField, action.payload)
+    console.log('Field Settings submitted: ', action.payload)
+    console.log('Response: ', resp)
     yield put(actions.saveFieldSettingsSuccess(action.payload))
   } catch (ex) {
     console.log(ex)

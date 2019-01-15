@@ -12,6 +12,7 @@ interface Props {
   loadingField: boolean
   savingField: boolean
   getField (id: string): any
+  saveField (req: FieldSettings): any
 }
 
 class App extends Component<Props> {
@@ -23,7 +24,14 @@ class App extends Component<Props> {
     const { field, loadingField } = this.props
 
     const fieldForm = !loadingField 
-      ? <FieldBuilderUI settings={this.props.field} title={'Field Builder'} saving={this.props.savingField} />
+      ? (
+        <FieldBuilderUI 
+          settings={this.props.field}
+          title={'Field Builder'}
+          saving={this.props.savingField}
+          updateField={this.props.saveField}
+        />
+      )
       : <div>Loading...</div>
 
     return (
@@ -50,7 +58,8 @@ const mstp = (state: any) => {
 
 const mdtp = (dispatch: any) => {
   return {
-    getField: bindActionCreators(fieldActionCreators.getFieldSettings, dispatch)
+    getField: bindActionCreators(fieldActionCreators.getFieldSettings, dispatch),
+    saveField: bindActionCreators(fieldActionCreators.saveFieldSettings, dispatch)
   }
 }
 

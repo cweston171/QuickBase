@@ -38,7 +38,7 @@ function fieldsReducer(state = initialState, action: any) {
     case types.SAVE_FIELD_SETTINGS_SUCCESS:
       return {
         ...state,
-        saveingField: false,
+        savingField: false,
         fieldSettings: action.payload
       }
 

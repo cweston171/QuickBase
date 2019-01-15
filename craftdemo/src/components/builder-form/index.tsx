@@ -58,7 +58,6 @@ class FieldBuilderUI extends React.Component<Props, State> {
   componentDidUpdate (prevProps: Props) {
     if (prevProps.settings !== this.props.settings) {
       this.initialState = Object.assign({}, this.initialState, this.props.settings)
-      console.log('didupdate initialstate:', this.initialState)
       this.setState(
         (prevState) => Object.assign({}, prevState, this.props.settings),
         () => { this.validateForm() }
@@ -119,7 +118,7 @@ class FieldBuilderUI extends React.Component<Props, State> {
   }
 
   render () {
-    const { title } = this.props
+    const { title, saving } = this.props
 
     const labelError = !this.state.labelValid ? (
       <div className={'text-danger'}>A label is required</div>
@@ -192,9 +191,10 @@ class FieldBuilderUI extends React.Component<Props, State> {
     const buttons = (
       <>
       <StandardSubmitButton 
-        working={this.props.saving}
+        working={saving}
         text="Submit"
         classes={'mr-2'}
+        disabled={!this.state.formValid}
         onClick={this.handleSubmit}
       />
       Or

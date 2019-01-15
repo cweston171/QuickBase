@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as fieldActionCreators from './fields/actions'
-import logo from './logo.svg'
 import { FieldSettings } from './models/builderModels'
 import FieldBuilderUI from './components/builder-form'
 import './App.css'
@@ -21,14 +20,14 @@ class App extends Component<Props> {
   }
 
   render() {
-    const { field, loadingField } = this.props
+    const { field, loadingField, savingField } = this.props
 
     const fieldForm = !loadingField 
       ? (
         <FieldBuilderUI 
-          settings={this.props.field}
+          settings={field}
           title={'Field Builder'}
-          saving={this.props.savingField}
+          saving={savingField}
           updateField={this.props.saveField}
         />
       )

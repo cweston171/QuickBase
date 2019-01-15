@@ -1,0 +1,17 @@
+.field-builder {
+   border: 1px solid lightgrey;
+   background-color: white;
+   box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+
+   .builder-title {
+     padding: 4px;
+     font-size: 1.25em;
+     font-weight: bold;
+     text-align: left;
+     color: purple;
+     border-bottom: 1px solid lightgrey;
+     margin-bottom: 20px;
+   }
+
+   .form-group { text-align: left }
+}

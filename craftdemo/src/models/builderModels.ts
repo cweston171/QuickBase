@@ -14,6 +14,7 @@ export enum MultiOrder {
 }
 
 export interface IGenericInput {
+  configId: string | null
   label: string
   value?: string
   required: boolean
@@ -25,3 +26,27 @@ export interface ISelect extends IGenericInput {
   options: LabelValue[]
   orderBy: number
 }
+
+export default class FormSettings {
+    public static NewGenericInputSettings = (): IGenericInput => {
+      return {
+        configId: null,
+        label: '',
+        required: false,
+        type: InputTypes.text,
+        value: undefined,
+      }
+    }
+    public static NewSelectInputSettings = (multi: boolean = false): ISelect => {
+      return {
+        configId: null,
+        label: '',
+        multi,
+        options: [],
+        orderBy: MultiOrder.alphabetical,
+        required: false,
+        type: multi ? InputTypes.multiSelect : InputTypes.select,
+        value: undefined
+      }
+    }
+  }

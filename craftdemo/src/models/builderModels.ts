@@ -5,7 +5,8 @@ export enum InputTypes {
   number = 1,
   text = 2,
   select = 3,
-  multiSelect = 4
+  multiSelect = 4,
+  checkbox = 5
 }
 
 export enum MultiOrder {
@@ -14,7 +15,7 @@ export enum MultiOrder {
 }
 
 export interface IGenericInput {
-  configId: string | null
+  configId?: string
   label: string
   value?: string
   required: boolean
@@ -25,6 +26,15 @@ export interface ISelect extends IGenericInput {
   multi: boolean
   options: LabelValue[]
   orderBy: number
+}
+
+export interface FieldSettings {
+  label: string
+  type: string
+  required: boolean
+  choices: string[]
+  displayAlpha: boolean
+  value: string
 }
 
 export default class FormSettings {

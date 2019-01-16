@@ -69,12 +69,12 @@ class FieldBuilderUI extends React.Component<Props, State> {
     // validate builder form
     const { label, choices } = this.state
     const labelValid = label.trim().length > 0
-    const choicesLengthValid = choices.length <= 50
+    const choicesLengthValid = choices.length <= 50 && choices.length >= 2
     const noChoiceDupes = !hasDupes(choices)
     const choicesError = !choicesLengthValid && !noChoiceDupes
-        ? 'Number of choices must be less than or equal to 50 and include no duplicate values.'
+        ? 'Number of choices must be less 50 and greater than two with no duplicate values.'
         : !choicesLengthValid && noChoiceDupes
-            ? 'Number or choices must be less than or equal to 50'
+            ? 'Number or choices must be less than 50 and greater than 2'
             : choicesLengthValid && !noChoiceDupes
                 ? 'Choices must not include duplicated values'
                 : undefined
@@ -105,6 +105,21 @@ class FieldBuilderUI extends React.Component<Props, State> {
       (prevState) => this.initialState,
       () => { this.validateForm() }
     )
+  }
+
+  handleFreshStart = () => {
+    this.initialState = {
+      choices: [],
+      choicesError: undefined,
+      displayAlpha: false,
+      default: '',
+      label: '',
+      required: false,
+      type: 'multi-select',
+      labelValid: false,
+      formValid: false
+    }
+    this.handleCancel()
   }
 
   handleSubmit = () => {
@@ -207,6 +222,15 @@ class FieldBuilderUI extends React.Component<Props, State> {
       </>
     )
 
+    const freshButton = (
+      <Button
+        color={'muted'}
+        onClick={this.handleFreshStart}
+      >
+        Clear form &amp; start fresh.
+      </Button>
+    )
+
     return (
       <Row>
         <Col xs={12} sm={{ size: 10, offset: 1 }} md={{ size: 8, offset: 2 }} className="field-builder">
@@ -216,6 +240,8 @@ class FieldBuilderUI extends React.Component<Props, State> {
               {form}
               <hr />
               {buttons}
+              <hr />
+              {freshButton}
             </Form>
           </div>
         </Col>

@@ -22,7 +22,7 @@ export function* saveFieldSettings(action: actions.saveFieldSettings) {
   try {
     const resp = yield call(FieldService.saveField, action.payload)
     console.log('Field Settings submitted: ', action.payload)
-    console.log('Response: ', resp)
+    console.log(`Transaction Status: ${resp.data.status}`)
     yield put(actions.saveFieldSettingsSuccess(action.payload))
   } catch (ex) {
     console.log(ex)
